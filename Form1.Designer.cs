@@ -1,4 +1,4 @@
-namespace PatentApp
+namespace App
 {
     partial class Form1
     {
