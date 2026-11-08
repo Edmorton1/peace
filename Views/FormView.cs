@@ -93,7 +93,7 @@ public class FormView : System.Windows.Forms.Form
             MessageBox.Show(this, "Анкета сохранена.", "Анкета", MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
-        catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
+        catch (ArgumentException ex)
         {
             MessageBox.Show(this, ex.Message, "Ошибка сохранения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }

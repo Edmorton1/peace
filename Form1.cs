@@ -1,7 +1,4 @@
-using System.Text.Json;
 using App.Controllers;
-using App.Models;
-using Form = App.Models.Form;
 using App.Views;
 
 namespace App;
@@ -24,14 +21,7 @@ public partial class Form1 : System.Windows.Forms.Form
         var roadmapButton = new Button { Text = "Открыть дорожную карту", AutoSize = true };
         formButton.Click += (_, _) => RunAction(() =>
         {
-            Form? formData = null;
-            try { formData = controller.LoadForm(); }
-            catch (Exception ex) when (ex is JsonException or InvalidOperationException)
-            {
-                MessageBox.Show(this, "Не удалось прочитать анкету. Заполните её заново.",
-                    "Ошибка чтения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            using var form = new FormView(controller, formData);
+            using var form = new FormView(controller, controller.GetForm());
             form.ShowDialog(this);
         });
         roadmapButton.Click += (_, _) => RunAction(() =>
@@ -47,8 +37,7 @@ public partial class Form1 : System.Windows.Forms.Form
     private void RunAction(Action action)
     {
         try { action(); }
-        catch (Exception ex) when (ex is InvalidOperationException or IOException
-            or UnauthorizedAccessException or JsonException)
+        catch (InvalidOperationException ex)
         {
             MessageBox.Show(this, ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }

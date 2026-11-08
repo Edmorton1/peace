@@ -7,7 +7,7 @@ namespace App.Controllers;
 
 public class AppController(FormRepository repository, AppService service)
 {
-    public Form? LoadForm() => repository.Load();
+    public Form? GetForm() => repository.Get();
 
     public void SaveForm(Form formData)
     {
@@ -19,7 +19,7 @@ public class AppController(FormRepository repository, AppService service)
 
     public Roadmap OpenRoadmap()
     {
-        var formData = repository.Load()
+        var formData = repository.Get()
             ?? throw new InvalidOperationException("Сначала заполните и сохраните анкету.");
         return service.CreateRoadmap(formData);
     }
