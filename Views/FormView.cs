@@ -28,7 +28,10 @@ public class FormView : System.Windows.Forms.Form
 
         var table = new TableLayoutPanel
         {
-            Dock = DockStyle.Fill, Padding = new Padding(12), ColumnCount = 2, RowCount = 6
+            Dock = DockStyle.Fill,
+            Padding = new Padding(12),
+            ColumnCount = 2,
+            RowCount = 6
         };
         table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 245));
         table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
@@ -39,7 +42,8 @@ public class FormView : System.Windows.Forms.Form
         var hint = new Label
         {
             Text = "* Обязательные поля. Дата нужна, если есть патент; поставьте галочку рядом с датой.",
-            Dock = DockStyle.Fill, AutoSize = true
+            Dock = DockStyle.Fill,
+            AutoSize = true
         };
         table.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         table.RowStyles.Add(new RowStyle(SizeType.AutoSize));

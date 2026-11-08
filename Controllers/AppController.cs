@@ -11,7 +11,7 @@ public class AppController(FormRepository repository, AppService service)
 
     public void SaveForm(Form formData)
     {
-        service.Validate(formData);
+        AppService.Validate(formData);
         formData.FullName = formData.FullName.Trim();
         if (!formData.Patent.HasPatent) formData.Patent.IssueDate = null;
         repository.Save(formData);
@@ -21,6 +21,6 @@ public class AppController(FormRepository repository, AppService service)
     {
         var formData = repository.Get()
             ?? throw new InvalidOperationException("Сначала заполните и сохраните анкету.");
-        return service.CreateRoadmap(formData);
+        return AppService.CreateRoadmap(formData);
     }
 }

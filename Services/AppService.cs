@@ -5,7 +5,7 @@ namespace App.Services;
 
 public class AppService
 {
-    public void Validate(Form formData)
+    public static void Validate(Form formData)
     {
         if (string.IsNullOrWhiteSpace(formData.FullName))
             throw new ArgumentException("Введите ФИО.");
@@ -21,7 +21,7 @@ public class AppService
             throw new ArgumentException("Дата патента не должна быть в будущем или старше двух месяцев.");
     }
 
-    public Roadmap CreateRoadmap(Form formData)
+    public static Roadmap CreateRoadmap(Form formData)
     {
         var roadmap = new Roadmap { Form = formData };
         if (!formData.Patent.HasPatent)
@@ -36,7 +36,8 @@ public class AppService
             ? "трудовом договоре" : "договоре ГПХ";
         roadmap.Steps.Add(new RoadmapStep
         {
-            Description = "Проверить данные полученного патента (заглушка).", Deadline = date.AddDays(7)
+            Description = "Проверить данные полученного патента (заглушка).",
+            Deadline = date.AddDays(7)
         });
         roadmap.Steps.Add(new RoadmapStep
         {
@@ -47,9 +48,10 @@ public class AppService
         });
         roadmap.Steps.Add(new RoadmapStep
         {
-            Description = "Проверить следующий платёж по патенту (заглушка).", Deadline = date.AddMonths(1)
+            Description = "Проверить следующий платёж по патенту (заглушка).",
+            Deadline = date.AddMonths(1)
         });
-        roadmap.Steps = roadmap.Steps.OrderBy(step => step.Deadline).ToList();
+        roadmap.Steps = [.. roadmap.Steps.OrderBy(step => step.Deadline)];
         return roadmap;
     }
 }

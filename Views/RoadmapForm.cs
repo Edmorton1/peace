@@ -20,18 +20,24 @@ public class RoadmapForm : System.Windows.Forms.Form
         table.Controls.Add(new Label
         {
             Text = $"Анкета: {roadmap.Form.FullName}\nДействия и сроки — учебные заглушки.",
-            AutoSize = true, Margin = new Padding(3, 3, 3, 10)
+            AutoSize = true,
+            Margin = new Padding(3, 3, 3, 10)
         }, 0, 0);
         var grid = new DataGridView
         {
-            Dock = DockStyle.Fill, ReadOnly = true, AllowUserToAddRows = false,
-            AllowUserToDeleteRows = false, RowHeadersVisible = false,
-            AutoGenerateColumns = false, AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
+            Dock = DockStyle.Fill,
+            ReadOnly = true,
+            AllowUserToAddRows = false,
+            AllowUserToDeleteRows = false,
+            RowHeadersVisible = false,
+            AutoGenerateColumns = false,
+            AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
             SelectionMode = DataGridViewSelectionMode.FullRowSelect
         };
         grid.Columns.Add(new DataGridViewTextBoxColumn
         {
-            HeaderText = "Действие", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+            HeaderText = "Действие",
+            AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
             DefaultCellStyle = new DataGridViewCellStyle { WrapMode = DataGridViewTriState.True }
         });
         grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Срок", Width = 120 });

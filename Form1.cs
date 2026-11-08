@@ -13,8 +13,10 @@ public partial class Form1 : System.Windows.Forms.Form
         StartPosition = FormStartPosition.CenterScreen;
         var panel = new FlowLayoutPanel
         {
-            Dock = DockStyle.Fill, Padding = new Padding(15),
-            FlowDirection = FlowDirection.TopDown, WrapContents = false
+            Dock = DockStyle.Fill,
+            Padding = new Padding(15),
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false
         };
         panel.Controls.Add(new Label { Text = "Выберите действие", AutoSize = true });
         var formButton = new Button { Text = "Заполнить анкету", AutoSize = true };
