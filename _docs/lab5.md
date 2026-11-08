@@ -7,19 +7,19 @@ classDiagram
     class AppController {
         -repository: FormRepository
         +AppController(repository: FormRepository, service: AppService)
-        +GetForm() Form
+        +GetForm() Form?
         +SaveForm(formData: Form)
         +OpenRoadmap() Roadmap
     }
 
     class AppService {
-        +Validate(formData: Form)
-        +CreateRoadmap(formData: Form) Roadmap
+        +Validate(formData: Form)$
+        +CreateRoadmap(formData: Form) Roadmap$
     }
 
     class FormRepository {
-        -form: Form
-        +Get() Form
+        -form: Form?
+        +Get() Form?
         +Save(formData: Form)
     }
 
@@ -31,7 +31,7 @@ classDiagram
 
     class Patent {
         +HasPatent: Boolean
-        +IssueDate: Date
+        +IssueDate: Date?
     }
 
     class Contract {
@@ -40,6 +40,8 @@ classDiagram
     }
 
     class ContractType {
+        <<enumeration>>
+        None
         Employment
         CivilLaw
     }
@@ -51,7 +53,7 @@ classDiagram
 
     class RoadmapStep {
         +Description: String
-        +Deadline: Date
+        +Deadline: Date?
     }
 
 
