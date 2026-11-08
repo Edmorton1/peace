@@ -16,29 +16,22 @@
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Иностранный гражданин
-    participant Controller as AppController
-    participant Service as AppService
-    participant Repository as FormRepository
-    User->>Controller: SaveForm(formData)
-    Controller->>Service: Validate(formData)
-    Note over Service: Статический метод.<br/>Проверяет ФИО и тип договора.<br/>Если патент есть, проверяет наличие даты<br/>и диапазон от сегодня минус 2 месяца до сегодня включительно.
+    actor ИностранныйГражданин
+    participant AppController
+    participant AppService
+    participant FormRepository
+    ИностранныйГражданин->>AppController: SaveForm(formData)
+    AppController->>AppService: Validate(formData)
 
     alt ФИО пустое, тип договора неверный или дата патента некорректна
-        Service-->>Controller: ArgumentException
-        Controller-->>User: Ошибка проверки данных
-        Note over User,Repository: Сохранённая анкета не заменяется.
+        AppService-->>AppController: FormError
+        AppController-->>ИностранныйГражданин: Ошибка проверки данных
     else Данные корректны
-        Service-->>Controller: Проверка завершена
-        Controller->>Controller: Удалить пробелы по краям ФИО
-        opt Патента нет
-            Controller->>Controller: formData.Patent.IssueDate = null
-        end
-        Controller->>Repository: Save(formData)
-        Repository->>Repository: form = formData
-        Note over Repository: Хранится ссылка на одну анкету в памяти.<br/>Файлы и база данных не используются.
-        Repository-->>Controller: Сохранение завершено
-        Controller-->>User: Анкета сохранена
+        AppService-->>AppController: Проверка завершена
+        AppController->>FormRepository: Save(formData)
+        FormRepository->>FormRepository: form = formData
+        FormRepository-->>AppController: Сохранение завершено
+        AppController-->>ИностранныйГражданин: Анкета сохранена
     end
 ```
 
@@ -47,42 +40,40 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Иностранный гражданин
-    participant Controller as AppController
-    participant Repository as FormRepository
-    participant Service as AppService
-    participant Map as Roadmap
-    User->>Controller: OpenRoadmap()
-    Controller->>Repository: Get()
-    Repository-->>Controller: formData или null
+    actor ИностранныйГражданин
+    participant AppController
+    participant FormRepository
+    participant AppService
+    participant Roadmap
+    ИностранныйГражданин->>AppController: OpenRoadmap()
+    AppController->>FormRepository: Get()
+    FormRepository-->>AppController: formData или null
 
     alt Анкета отсутствует
-        Controller-->>User: Ошибка: сначала заполните и сохраните анкету
+        AppController-->>ИностранныйГражданин: Ошибка: сначала заполните и сохраните анкету
     else Анкета сохранена в памяти
-        Controller->>Service: CreateRoadmap(formData)
-        Note over Service: Статический метод. Использует сохранённую анкету.<br/>Повторная проверка даты здесь не выполняется.
-        Service->>Map: new Roadmap(), Form = formData
+        AppController->>AppService: CreateRoadmap(formData)
+        AppService->>Roadmap: new Roadmap(), Form = formData
 
         alt Патента нет
-            Service->>Map: Steps.Add(new RoadmapStep)
-            Note over Service,Map: «Получить патент». Срок не задан.
+            AppService->>Roadmap: Steps.Add(new RoadmapStep)
+            Note over AppService,Roadmap: «Получить патент». Срок не задан.
         else Патент есть
-            Service->>Map: Steps.Add(new RoadmapStep)
-            Note over Service,Map: Проверка данных патента: дата выдачи плюс 7 дней.
+            AppService->>Roadmap: Steps.Add(new RoadmapStep)
+            Note over AppService,Roadmap: Проверка данных патента: дата выдачи плюс 7 дней.
             alt Договор отсутствует
-                Service->>Map: Steps.Add(new RoadmapStep)
-                Note over Service,Map: Заключить трудовой договор или ГПХ:<br/>дата выдачи патента плюс 2 месяца.
+                AppService->>Roadmap: Steps.Add(new RoadmapStep)
+                Note over AppService,Roadmap: Заключить трудовой договор или ГПХ:<br/>дата выдачи патента плюс 2 месяца.
             else Договор заключён
-                Service->>Map: Steps.Add(new RoadmapStep)
-                Note over Service,Map: Подготовить сведения о трудовом договоре или ГПХ:<br/>дата выдачи патента плюс 2 месяца.
+                AppService->>Roadmap: Steps.Add(new RoadmapStep)
+                Note over AppService,Roadmap: Подготовить сведения о трудовом договоре или ГПХ:<br/>дата выдачи патента плюс 2 месяца.
             end
-            Service->>Map: Steps.Add(new RoadmapStep)
-            Note over Service,Map: Проверка следующего платежа:<br/>дата выдачи патента плюс 1 месяц.
-            Service->>Map: Упорядочить Steps по Deadline
+            AppService->>Roadmap: Steps.Add(new RoadmapStep)
+            Note over AppService,Roadmap: Проверка следующего платежа:<br/>дата выдачи патента плюс 1 месяц.
+            AppService->>Roadmap: Упорядочить Steps по Deadline
         end
 
-        Note over Service,Map: Описания действий и сроки — заглушки из кода.
-        Service-->>Controller: roadmap
-        Controller-->>User: roadmap
+        AppService-->>AppController: roadmap
+        AppController-->>ИностранныйГражданин: roadmap
     end
 ```
