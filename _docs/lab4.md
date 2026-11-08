@@ -36,6 +36,7 @@ sequenceDiagram
     participant FormRepository
     participant AppService
     participant Roadmap
+    participant Steps
     ИностранныйГражданин->>AppController: OpenRoadmap()
     AppController->>FormRepository: Get()
     FormRepository-->>AppController: formData или null
@@ -47,6 +48,8 @@ sequenceDiagram
     AppController->>AppService: CreateRoadmap(formData)
     AppService->>Roadmap: new Roadmap(), Form = formData
     Note over AppService,Roadmap: Нужные шаги в зависимости от Form
+    AppService->>Steps: new RoadmapStep()
+    Steps-->>AppService: step
     AppService->>Roadmap: Steps.Add(step)
     AppService-->>AppController: roadmap
     AppController-->>ИностранныйГражданин: roadmap
