@@ -7,49 +7,38 @@
 
 # Диаграмма последовательностей системных функций.
 
+Окна интерфейса опущены. Обращения пользователя к контроллеру и ответы
+показаны условно через границу системы; обработка нажатий и показ сообщений
+остаются в интерфейсе и здесь не детализируются.
+
 ## Ввести данные
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User as Иностранный гражданин
-    participant View as formView: FormView
-    participant Controller as controller: AppController
+    participant Controller as AppController
     participant Service as AppService
-    participant Repository as repository: FormRepository
+    participant Repository as FormRepository
+    User->>Controller: SaveForm(formData)
+    Controller->>Service: Validate(formData)
+    Note over Service: Статический метод.<br/>Проверяет ФИО и тип договора.<br/>Если патент есть, проверяет наличие даты<br/>и диапазон от сегодня минус 2 месяца до сегодня включительно.
 
-    Note over User,View: Анкета открыта. Пользователь заполняет поля.
-    User->>View: Нажать «Сохранить»
-    View->>View: Save()
-
-    alt Не выбран статус патента или договора
-        View-->>User: Сообщение об обязательных полях
-        Note over User,View: Форма остаётся открытой для исправления.
-    else Статусы выбраны
-        View->>View: Создать Form, Patent и Contract из полей
-        View->>Controller: SaveForm(formData)
-        Controller->>Service: Validate(formData)
-        Note over Service: Статический метод.<br/>Проверяет ФИО и тип договора.<br/>Если патент есть, проверяет наличие даты<br/>и диапазон от сегодня минус 2 месяца до сегодня включительно.
-
-        alt ФИО пустое, тип договора неверный или дата патента некорректна
-            Service-->>Controller: ArgumentException
-            Controller-->>View: Передать исключение
-            View-->>User: Показать сообщение об ошибке
-            Note over User,Repository: Анкета не заменяется. Форма остаётся открытой.
-        else Данные корректны
-            Service-->>Controller: Проверка завершена
-            Controller->>Controller: Удалить пробелы по краям ФИО
-            opt Патента нет
-                Controller->>Controller: formData.Patent.IssueDate = null
-            end
-            Controller->>Repository: Save(formData)
-            Repository->>Repository: form = formData
-            Note over Repository: Хранится ссылка на одну анкету в памяти.<br/>Файлы и база данных не используются.
-            Repository-->>Controller: Сохранение завершено
-            Controller-->>View: Сохранение завершено
-            View-->>User: «Анкета сохранена»
-            View->>View: DialogResult = OK, закрыть окно
+    alt ФИО пустое, тип договора неверный или дата патента некорректна
+        Service-->>Controller: ArgumentException
+        Controller-->>User: Ошибка проверки данных
+        Note over User,Repository: Сохранённая анкета не заменяется.
+    else Данные корректны
+        Service-->>Controller: Проверка завершена
+        Controller->>Controller: Удалить пробелы по краям ФИО
+        opt Патента нет
+            Controller->>Controller: formData.Patent.IssueDate = null
         end
+        Controller->>Repository: Save(formData)
+        Repository->>Repository: form = formData
+        Note over Repository: Хранится ссылка на одну анкету в памяти.<br/>Файлы и база данных не используются.
+        Repository-->>Controller: Сохранение завершено
+        Controller-->>User: Анкета сохранена
     end
 ```
 
@@ -59,21 +48,16 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     actor User as Иностранный гражданин
-    participant Main as mainForm: Form1
-    participant Controller as controller: AppController
-    participant Repository as repository: FormRepository
+    participant Controller as AppController
+    participant Repository as FormRepository
     participant Service as AppService
-    participant Map as roadmap: Roadmap
-    participant View as roadmapForm: RoadmapForm
-
-    User->>Main: Нажать «Открыть дорожную карту»
-    Main->>Controller: OpenRoadmap()
+    participant Map as Roadmap
+    User->>Controller: OpenRoadmap()
     Controller->>Repository: Get()
     Repository-->>Controller: formData или null
 
     alt Анкета отсутствует
-        Controller-->>Main: InvalidOperationException
-        Main-->>User: «Сначала заполните и сохраните анкету»
+        Controller-->>User: Ошибка: сначала заполните и сохраните анкету
     else Анкета сохранена в памяти
         Controller->>Service: CreateRoadmap(formData)
         Note over Service: Статический метод. Использует сохранённую анкету.<br/>Повторная проверка даты здесь не выполняется.
@@ -99,10 +83,6 @@ sequenceDiagram
 
         Note over Service,Map: Описания действий и сроки — заглушки из кода.
         Service-->>Controller: roadmap
-        Controller-->>Main: roadmap
-        Main->>View: new RoadmapForm(roadmap)
-        Note over View: Заполнить таблицу описаниями и сроками шагов.
-        Main->>View: ShowDialog(mainForm)
-        View-->>User: Показать дорожную карту
+        Controller-->>User: roadmap
     end
 ```
