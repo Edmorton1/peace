@@ -51,7 +51,6 @@ sequenceDiagram
 
     AppController->>AppService: CreateRoadmap(formData)
     AppService->>Roadmap: new Roadmap(), Form = formData
-    Note over AppService,RoadmapStep: Нужные шаги по Form:<br/>1 без патента, 3 с патентом
     loop Для каждого нужного шага
         AppService->>RoadmapStep: new RoadmapStep()<br/>Задать Description и Deadline
         RoadmapStep-->>AppService: step
