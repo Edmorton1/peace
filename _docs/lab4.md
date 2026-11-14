@@ -5,7 +5,6 @@
 ```mermaid
 %%{init: {'sequence': {'mirrorActors': false}}}%%
 sequenceDiagram
-    autonumber
     actor ИностранныйГражданин
     participant AppController
     participant AppService
@@ -34,7 +33,6 @@ sequenceDiagram
 ```mermaid
 %%{init: {'sequence': {'mirrorActors': false}}}%%
 sequenceDiagram
-    autonumber
     actor ИностранныйГражданин
     participant AppController
     participant FormRepository
