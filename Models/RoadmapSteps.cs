@@ -4,7 +4,7 @@ namespace App.Models;
 
 public static class RoadmapSteps
 {
-    // Offset задаёт срок от даты выдачи патента; null — шаг без срока.
+    // Offset задаёт срок от даты выдачи патента; null - шаг без срока.
     private static readonly (Func<DateTime, DateTime>? Offset, string Description, Func<Form, bool> Filter)[] Steps =
     [
         (

@@ -19,7 +19,7 @@ public class RoadmapForm : System.Windows.Forms.Form
         table.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         table.Controls.Add(new Label
         {
-            Text = $"Анкета: {roadmap.Form.FullName}\nДействия и сроки — учебные заглушки.",
+            Text = $"Анкета: {roadmap.Form.FullName}\nДействия и сроки - учебные заглушки.",
             AutoSize = true,
             Margin = new Padding(3, 3, 3, 10)
         }, 0, 0);

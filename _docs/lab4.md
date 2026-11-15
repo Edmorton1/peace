@@ -38,6 +38,7 @@ sequenceDiagram
     participant FormRepository
     participant AppService
     participant Roadmap
+    participant RoadmapSteps
     participant RoadmapStep
     ИностранныйГражданин->>AppController: OpenRoadmap()
     AppController->>FormRepository: Get()
@@ -49,14 +50,16 @@ sequenceDiagram
 
     AppController->>AppService: CreateRoadmap(formData)
     AppService->>Roadmap: new Roadmap(), Form = formData
-    loop Для каждого нужного шага
-        AppService->>RoadmapStep: new RoadmapStep()<br/>Задать Description и Deadline
-        RoadmapStep-->>AppService: step
-        AppService->>Roadmap: Steps.Add(step)
+    AppService->>RoadmapSteps: CreateSteps(formData)
+    Note over RoadmapSteps: Правила хранятся в Steps
+    loop Для каждого подходящего правила
+        RoadmapSteps->>RoadmapStep: new RoadmapStep()<br/>Задать Description и Deadline
+        RoadmapStep-->>RoadmapSteps: step
+        RoadmapSteps->>RoadmapSteps: steps.Add(step)
     end
-    opt Патент есть
-        AppService->>Roadmap: Упорядочить Steps по Deadline
-    end
+    RoadmapSteps->>RoadmapSteps: Упорядочить steps по Deadline
+    RoadmapSteps-->>AppService: steps
+    AppService->>Roadmap: Steps = steps
     AppService-->>AppController: roadmap
     AppController-->>ИностранныйГражданин: roadmap
 ```

@@ -51,6 +51,14 @@ classDiagram
         +Steps: RoadmapStep Collection
     }
 
+    class RoadmapSteps {
+        <<static>>
+        -Steps: ValueTuple[]$
+        +CreateSteps(formData: Form) RoadmapStep Collection$
+    }
+
+    note for RoadmapSteps "Steps - массив кортежей с полями:<br/>Offset: Date → Date - расчёт срока от даты патента<br/>Description: String - описание шага<br/>Filter: Form → Boolean - условие включения шага"
+
     class RoadmapStep {
         +Description: String
         +Deadline: Date?
@@ -61,7 +69,9 @@ classDiagram
     AppController ..> AppService
     AppService ..> Form
     AppService ..> Roadmap
-    AppService ..> RoadmapStep
+    AppService ..> RoadmapSteps
+    RoadmapSteps ..> Form
+    RoadmapSteps ..> RoadmapStep
 
     FormRepository --> Form
     Form --> Patent
