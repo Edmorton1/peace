@@ -23,35 +23,10 @@ public class AppService
 
     public static Roadmap CreateRoadmap(Form formData)
     {
-        var roadmap = new Roadmap { Form = formData };
-        if (!formData.Patent.HasPatent)
+        return new Roadmap
         {
-            roadmap.Steps.Add(new RoadmapStep { Description = "Получить патент (заглушка)." });
-            return roadmap;
-        }
-
-        // В задании нет точных действий и сроков. Все значения ниже — учебные заглушки.
-        var date = formData.Patent.IssueDate!.Value.Date;
-        var contractName = formData.Contract.Type == ContractType.Employment
-            ? "трудовом договоре" : "договоре ГПХ";
-        roadmap.Steps.Add(new RoadmapStep
-        {
-            Description = "Проверить данные полученного патента (заглушка).",
-            Deadline = date.AddDays(7)
-        });
-        roadmap.Steps.Add(new RoadmapStep
-        {
-            Description = formData.Contract.HasContract
-                ? $"Подготовить сведения о {contractName} (заглушка)."
-                : "Заключить трудовой договор или договор ГПХ (заглушка).",
-            Deadline = date.AddMonths(2)
-        });
-        roadmap.Steps.Add(new RoadmapStep
-        {
-            Description = "Проверить следующий платёж по патенту (заглушка).",
-            Deadline = date.AddMonths(1)
-        });
-        roadmap.Steps = [.. roadmap.Steps.OrderBy(step => step.Deadline)];
-        return roadmap;
+            Form = formData,
+            Steps = RoadmapSteps.CreateSteps(formData)
+        };
     }
 }
